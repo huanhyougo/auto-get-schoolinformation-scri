@@ -13,35 +13,25 @@
 
 # ---------- 爬取目标 ----------
 targets:
-  - name: 教务处
-    url: https://www.aao.cdut.edu.cn/
-    base_url: https://www.aao.cdut.edu.cn
-    # 通知列表页面
+  - name: 西安理工大学
+    url: https://zhixing.xaut.edu.cn/index.jsp
+    base_url: https://zhixing.xaut.edu.cn
     list_pages:
-      - url: https://www.aao.cdut.edu.cn/index/jwtz.htm
-        section: 教务通知
-      - url: https://www.aao.cdut.edu.cn/index/xwdt.htm
-        section: 新闻动态
-      - url: https://www.aao.cdut.edu.cn/index/gszl.htm
-        section: 公示专栏
-    # 识别通知链接的 URL 关键字
-    link_patterns:
-      - info/1171
-      - info/1172
-      - info/1248
-      - content.jsp
-
-  - name: 机电工程学院
-    url: https://mee.cdut.edu.cn/
-    base_url: https://mee.cdut.edu.cn
-    list_pages:
-      - url: https://mee.cdut.edu.cn/jdxw.htm
-        section: 机电新闻
-      - url: https://mee.cdut.edu.cn/tzgg.htm
+      - url: https://zhixing.xaut.edu.cn/tzgg.htm
         section: 通知公告
+    # 通知公告详情页使用 info/11035/<编号>.htm
     link_patterns:
-      - info/1049
-      - info/1050
+      - info/11035/
+
+  - name: 西安理工大学电气工程学院
+    url: https://dqxy.xaut.edu.cn/
+    base_url: https://dqxy.xaut.edu.cn
+    list_pages:
+      - url: https://dqxy.xaut.edu.cn/tzgg.htm
+        section: 通知公告
+    # 通知公告详情页使用 info/1034/<编号>.htm
+    link_patterns:
+      - info/1034/
 
 # ---------- 通知渠道 ----------
 channels:

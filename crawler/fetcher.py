@@ -1,6 +1,6 @@
 """
 校园通知爬虫（Playwright 浏览器引擎 + stealth 隐身）
-适配成都理工大学教务处 + 机电工程学院
+适配西安理工大学通知公告及其他高校站点
 因网站有 JS 反爬机制，使用真实浏览器 + 反检测补丁渲染后提取内容
 """
 from playwright.sync_api import sync_playwright
@@ -80,7 +80,7 @@ class NoticeFetcher:
             # 提取日期
             date = None
 
-            # 方法1：从父元素 <li> 中找 <span>（CDUT 教务处的格式）
+            # 方法1：从父元素 <li> 中找 <span>（常见高校列表格式）
             parent = a.parent
             if parent:
                 spans = parent.find_all("span")

@@ -1,6 +1,6 @@
 """
 校园通知爬虫 + 推送系统
-适配成都理工大学（CDUT）教务处 + 机电工程学院
+适配西安理工大学（XAUT）通知公告
 使用持久化 Chrome 用户目录绕过 WAF
 """
 import yaml
@@ -155,15 +155,19 @@ def main():
     lookback = config.get("schedule", {}).get("lookback_days", 1)
     cutoff = datetime.now() - timedelta(days=lookback)
 
-    # 使用持久化 Chrome 用户目录（保持 WAF Cookie）
+    # 使用持久化浏览器目录（本地可见 Chrome，Actions 使用无头 Chromium）
+    headless = os.environ.get("PLAYWRIGHT_HEADLESS", "").lower() in ("1", "true", "yes")
+    launch_options = {
+        "user_data_dir": USER_DATA_DIR,
+        "headless": headless,
+        "viewport": {"width": 1920, "height": 1080},
+        "args": ["--disable-blink-features=AutomationControlled"],
+    }
+    if not headless:
+        launch_options["channel"] = "chrome"
+
     with sync_playwright() as p:
-        context = p.chromium.launch_persistent_context(
-            user_data_dir=USER_DATA_DIR,
-            channel="chrome",
-            headless=False,  # 需要可见窗口过WAF，任务完成后自动关闭浏览器
-            viewport={"width": 1920, "height": 1080},
-            args=["--disable-blink-features=AutomationControlled"],
-        )
+        context = p.chromium.launch_persistent_context(**launch_options)
 
         all_notices = []
         for target in config["targets"]:
