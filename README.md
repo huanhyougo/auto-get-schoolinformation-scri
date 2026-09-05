@@ -54,7 +54,8 @@ channels:
   email:
     enabled: true
     smtp_server: smtp.qq.com
-    smtp_port: 465
+    smtp_port: 587
+    smtp_security: starttls
     sender_email: "your_email@qq.com"       # 你的 QQ 邮箱
     sender_password: "your_smtp_code"       # QQ邮箱授权码（非登录密码）
     recipients:

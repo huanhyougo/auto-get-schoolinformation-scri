@@ -28,10 +28,7 @@ class EmailSender:
             msg["To"] = ", ".join(self.cfg["recipients"])
             msg.attach(MIMEText(content, "html", "utf-8"))
 
-            server = smtplib.SMTP_SSL(self.cfg["smtp_server"], self.cfg["smtp_port"])
-            server.login(self.cfg["sender_email"], self.cfg["sender_password"])
-            server.send_message(msg)
-            server.quit()
+            self._send_message(msg)
             logger.info(f"[OK] 邮件已发送，共 {len(notices)} 条通知")
             return True
         except Exception as e:
@@ -52,15 +49,30 @@ class EmailSender:
             msg["To"] = ", ".join(self.cfg["recipients"])
             msg.attach(MIMEText(self._build_empty_html(now), "html", "utf-8"))
 
-            server = smtplib.SMTP_SSL(self.cfg["smtp_server"], self.cfg["smtp_port"])
-            server.login(self.cfg["sender_email"], self.cfg["sender_password"])
-            server.send_message(msg)
-            server.quit()
+            self._send_message(msg)
             logger.info("[OK] 暂无新通知邮件已发送")
             return True
         except Exception as e:
             logger.error(f"[ERROR] 邮件发送失败: {e}")
             return False
+
+    def _send_message(self, msg):
+        """按配置建立 SMTP 连接并发送邮件。"""
+        host = self.cfg["smtp_server"]
+        port = int(self.cfg.get("smtp_port", 465))
+        security = self.cfg.get("smtp_security", "ssl").lower()
+
+        if security == "starttls" or port == 587:
+            with smtplib.SMTP(host, port, timeout=20) as server:
+                server.ehlo()
+                server.starttls()
+                server.ehlo()
+                server.login(self.cfg["sender_email"], self.cfg["sender_password"])
+                server.send_message(msg)
+        else:
+            with smtplib.SMTP_SSL(host, port, timeout=20) as server:
+                server.login(self.cfg["sender_email"], self.cfg["sender_password"])
+                server.send_message(msg)
 
     def _build_empty_html(self, now):
         """构建"暂无新通知"的 HTML 邮件"""
