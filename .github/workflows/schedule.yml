@@ -9,6 +9,7 @@ on:
     branches: [main, master]
     paths:
       - "config.yaml"
+      - "requirements.txt"
       - "main.py"
       - "crawler/**"
       - "notifier/**"
